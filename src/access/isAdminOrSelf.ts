@@ -2,7 +2,7 @@ import { Access } from 'payload'
 
 export const isAdminOrSelf: Access = ({ req: { user } }) => {
   // Need to be logged in
-  if (user) {
+  if (user && user.isApproved) {
     // If user has role of 'admin'
     if (user.role === 'admin') {
       return true

@@ -73,7 +73,6 @@ export interface Config {
     users: User;
     tags: Tag;
     charts: Chart;
-    comments: Comment;
     spaces: Space;
     redirects: Redirect;
     forms: Form;
@@ -105,7 +104,6 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     charts: ChartsSelect<false> | ChartsSelect<true>;
-    comments: CommentsSelect<false> | CommentsSelect<true>;
     spaces: SpacesSelect<false> | SpacesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -849,23 +847,6 @@ export interface Chart {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "comments".
- */
-export interface Comment {
-  id: string;
-  author?: (string | null) | User;
-  email?: string | null;
-  content?: string | null;
-  replyPost?: (string | null) | Post;
-  replyComment?: (string | null) | Comment;
-  isApproved?: boolean | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1063,10 +1044,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'charts';
         value: string | Chart;
-      } | null)
-    | ({
-        relationTo: 'comments';
-        value: string | Comment;
       } | null)
     | ({
         relationTo: 'spaces';
@@ -1461,22 +1438,6 @@ export interface ChartsSelect<T extends boolean = true> {
   iframe?: T;
   description?: T;
   space?: T;
-  slug?: T;
-  slugLock?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "comments_select".
- */
-export interface CommentsSelect<T extends boolean = true> {
-  author?: T;
-  email?: T;
-  content?: T;
-  replyPost?: T;
-  replyComment?: T;
-  isApproved?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;

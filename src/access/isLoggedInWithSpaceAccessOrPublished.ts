@@ -4,7 +4,7 @@ import { User } from '../payload-types'
 export const isLoggedInWithSpaceAccessOrPublished =
   (spaceIDFieldName: string = 'space'): Access<User> =>
   ({ req: { user } }) => {
-    if (user) {
+    if (user && user.isApproved) {
       if (user.role === 'admin') {
         return true
       }

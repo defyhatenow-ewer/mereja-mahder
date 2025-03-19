@@ -7,17 +7,7 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
-import {
-  Categories,
-  Media,
-  Pages,
-  Posts,
-  Users,
-  Tags,
-  Charts,
-  Comments,
-  Spaces,
-} from './collections'
+import { Categories, Media, Pages, Posts, Users, Tags, Charts, Spaces } from './collections'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -70,7 +60,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Tags, Charts, Comments, Spaces],
+  collections: [Pages, Posts, Media, Categories, Users, Tags, Charts, Spaces],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [...plugins],

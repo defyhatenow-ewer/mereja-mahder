@@ -24,7 +24,7 @@ export const isAdminOrEditorWithSpaceAccess =
 export const isAdminOrEditorWithSpaceAccessFieldLevel =
   (): FieldAccess<{ id: string; space: string }, User> =>
   ({ req: { user }, doc }) => {
-    if (user) {
+    if (user && user.isApproved) {
       if (user.role === 'admin') {
         return true
       }

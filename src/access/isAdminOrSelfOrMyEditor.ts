@@ -5,7 +5,7 @@ export const isAdminOrSelfOrMyEditor =
   (spaceIDFieldName: string = 'space'): Access<User> =>
   ({ req: { user } }) => {
     // Need to be logged in
-    if (user) {
+    if (user && user.isApproved) {
       // If user has role of 'admin'
       if (user.role === 'admin') {
         return true

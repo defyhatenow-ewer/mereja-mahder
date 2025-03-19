@@ -3,7 +3,7 @@ import { Access } from 'payload'
 export const isAdminOrEditorWithSpaceAccessOrSelf =
   (spaceIDFieldName: string = 'space', authorsFieldName: string = 'authors'): Access =>
   ({ req: { user }, data }) => {
-    if (user) {
+    if (user && user.isApproved) {
       if (user.role === 'admin') {
         return true
       }
