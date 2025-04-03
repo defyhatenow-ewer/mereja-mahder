@@ -3,13 +3,14 @@ import type { CollectionConfig } from 'payload'
 import { slugField } from '@/fields/slug'
 import { isLoggedIn } from '@/access/isLoggedIn'
 import { isAdminOrEditor } from '@/access/isAdminOrEditor'
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 
 export const Tags: CollectionConfig = {
   slug: 'tags',
   access: {
     create: isLoggedIn,
     delete: isAdminOrEditor,
-    read: isLoggedIn,
+    read: authenticatedOrPublished,
     update: isAdminOrEditor,
   },
   admin: {

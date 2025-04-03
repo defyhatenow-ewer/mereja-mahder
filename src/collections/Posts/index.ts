@@ -24,14 +24,13 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/slug'
-import { updateViews } from './hooks/updateViews'
-import { isLoggedIn } from '@/access/isLoggedIn'
-import { isAdmin } from '@/access/isAdmin'
+import { isAdmin, isAdminFieldLevel } from '@/access/isAdmin'
 import { isLoggedInWithSpaceAccessOrPublished } from '@/access/isLoggedInWithSpaceAccessOrPublished'
 import { isAdminOrEditorWithSpaceAccessOrSelf } from '@/access/isAdminOrEditorWithSpaceAccessOrSelf'
 import { isLoggedInWithSpaceAccess } from '@/access/isLoggedInWithSpaceAccess'
 import { beforeCreatePost } from './hooks/beforeCreatePost'
 import { ensureAtLeastOneAuthor } from './hooks/ensureAtLeastOneAuthor'
+import { populateFeaturedImage } from './hooks/populateFeaturedImage'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
@@ -44,15 +43,15 @@ export const Posts: CollectionConfig<'posts'> = {
   // This config controls what's populated by default when a post is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
   // Type safe if the collection slug generic is passed to `CollectionConfig` - `CollectionConfig<'posts'>
-  defaultPopulate: {
-    title: true,
-    slug: true,
-    categories: true,
-    meta: {
-      image: true,
-      description: true,
-    },
-  },
+  // defaultPopulate: {
+  //   title: true,
+  //   slug: true,
+  //   categories: true,
+  //   meta: {
+  //     image: true,
+  //     description: true,
+  //   },
+  // },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt', 'views'],
     livePreview: {
@@ -130,6 +129,14 @@ export const Posts: CollectionConfig<'posts'> = {
               type: 'upload',
               relationTo: 'media',
               label: 'PDF',
+            },
+            {
+              name: 'iframe',
+              type: 'code',
+              admin: {
+                language: 'html',
+              },
+              label: 'iFrame',
             },
           ],
           label: 'Content',
@@ -262,23 +269,44 @@ export const Posts: CollectionConfig<'posts'> = {
       min: 0,
       admin: {
         readOnly: true,
+        position: 'sidebar',
       },
     },
     {
       name: 'space',
       type: 'relationship',
       relationTo: 'spaces',
-      required: true,
-      access: {
-        update: () => false,
+      admin: {
+        position: 'sidebar',
       },
+      access: {
+        update: isAdminFieldLevel,
+      },
+    },
+    {
+      name: 'privacy',
+      type: 'select',
+      admin: {
+        position: 'sidebar',
+      },
+      options: [
+        {
+          label: 'Private',
+          value: 'private',
+        },
+        {
+          label: 'Public',
+          value: 'public',
+        },
+      ],
+      defaultValue: 'private',
     },
     ...slugField(),
   ],
   hooks: {
     beforeChange: [beforeCreatePost, ensureAtLeastOneAuthor],
     afterChange: [revalidatePost],
-    afterRead: [populateAuthors],
+    afterRead: [populateAuthors, populateFeaturedImage],
     afterDelete: [revalidateDelete],
   },
   versions: {

@@ -2,14 +2,14 @@ import type { CollectionConfig } from 'payload'
 
 import { slugField } from '@/fields/slug'
 import { isAdmin } from '@/access/isAdmin'
-import { isLoggedIn } from '@/access/isLoggedIn'
+import { anyone } from '@/access/anyone'
 
 export const Spaces: CollectionConfig = {
   slug: 'spaces',
   access: {
     create: isAdmin,
     delete: isAdmin,
-    read: isAdmin,
+    read: anyone,
     update: isAdmin,
   },
   admin: {

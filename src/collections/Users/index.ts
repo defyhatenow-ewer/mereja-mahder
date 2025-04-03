@@ -5,6 +5,7 @@ import { isAdminOrEditorWithSpaceAccessFieldLevel } from '@/access/isAdminOrEdit
 import { isAdmin, isAdminFieldLevel } from '@/access/isAdmin'
 import { isLoggedInWithSpaceAccess } from '@/access/isLoggedInWithSpaceAccess'
 import { isAdminOrSelfOrMyEditor } from '@/access/isAdminOrSelfOrMyEditor'
+import { registerEndpoint } from './endpoints/register'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -54,6 +55,10 @@ export const Users: CollectionConfig = {
           label: 'Curator',
           value: 'curator',
         },
+        {
+          label: 'Basic',
+          value: 'basic',
+        },
       ],
     },
     {
@@ -80,4 +85,5 @@ export const Users: CollectionConfig = {
     },
   ],
   timestamps: true,
+  endpoints: [registerEndpoint],
 }

@@ -208,7 +208,7 @@ export interface Page {
       | null;
     media?: (string | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | CodeBlock)[];
   meta?: {
     title?: string | null;
     /**
@@ -218,7 +218,7 @@ export interface Page {
     description?: string | null;
   };
   publishedAt?: string | null;
-  space: string | Space;
+  space?: (string | null) | Space;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -264,6 +264,7 @@ export interface Post {
     [k: string]: unknown;
   } | null;
   pdf?: (string | null) | Media;
+  iframe?: string | null;
   relatedPosts?: (string | Post)[] | null;
   categories?: (string | Category)[] | null;
   tags?: (string | Tag)[] | null;
@@ -284,7 +285,8 @@ export interface Post {
       }[]
     | null;
   views?: number | null;
-  space: string | Space;
+  space?: (string | null) | Space;
+  privacy?: ('private' | 'public') | null;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -433,7 +435,7 @@ export interface Tag {
 export interface User {
   id: string;
   name?: string | null;
-  role: 'admin' | 'editor' | 'partner' | 'fellow' | 'curator';
+  role: 'admin' | 'editor' | 'partner' | 'fellow' | 'curator' | 'basic';
   avatar?: (string | null) | Media;
   isApproved?: boolean | null;
   space?: (string | null) | Space;
@@ -818,6 +820,17 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock".
+ */
+export interface CodeBlock {
+  language?: ('typescript' | 'javascript' | 'css') | null;
+  code: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'code';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "charts".
  */
 export interface Chart {
@@ -1147,6 +1160,7 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        code?: T | CodeBlockSelect<T>;
       };
   meta?:
     | T
@@ -1249,6 +1263,16 @@ export interface FormBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock_select".
+ */
+export interface CodeBlockSelect<T extends boolean = true> {
+  language?: T;
+  code?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
@@ -1257,6 +1281,7 @@ export interface PostsSelect<T extends boolean = true> {
   content?: T;
   excerpt?: T;
   pdf?: T;
+  iframe?: T;
   relatedPosts?: T;
   categories?: T;
   tags?: T;
@@ -1277,6 +1302,7 @@ export interface PostsSelect<T extends boolean = true> {
       };
   views?: T;
   space?: T;
+  privacy?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1860,17 +1886,6 @@ export interface BannerBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'banner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CodeBlock".
- */
-export interface CodeBlock {
-  language?: ('typescript' | 'javascript' | 'css') | null;
-  code: string;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'code';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
