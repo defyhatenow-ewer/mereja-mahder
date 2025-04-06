@@ -71,6 +71,9 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    tags: Tag;
+    charts: Chart;
+    spaces: Space;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -80,13 +83,28 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    categories: {
+      relatedPosts: 'posts';
+    };
+    tags: {
+      relatedPosts: 'posts';
+    };
+    spaces: {
+      users: 'users';
+      pages: 'pages';
+      posts: 'posts';
+    };
+  };
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
+    charts: ChartsSelect<false> | ChartsSelect<true>;
+    spaces: SpacesSelect<false> | SpacesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -190,7 +208,7 @@ export interface Page {
       | null;
     media?: (string | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | CodeBlock)[];
   meta?: {
     title?: string | null;
     /**
@@ -200,6 +218,7 @@ export interface Page {
     description?: string | null;
   };
   publishedAt?: string | null;
+  space?: (string | null) | Space;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -213,7 +232,7 @@ export interface Page {
 export interface Post {
   id: string;
   title: string;
-  heroImage?: (string | null) | Media;
+  featuredImage?: (string | null) | Media;
   content: {
     root: {
       type: string;
@@ -229,8 +248,26 @@ export interface Post {
     };
     [k: string]: unknown;
   };
+  excerpt?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  pdf?: (string | null) | Media;
+  iframe?: string | null;
   relatedPosts?: (string | Post)[] | null;
   categories?: (string | Category)[] | null;
+  tags?: (string | Tag)[] | null;
   meta?: {
     title?: string | null;
     /**
@@ -247,6 +284,9 @@ export interface Post {
         name?: string | null;
       }[]
     | null;
+  views?: number | null;
+  space?: (string | null) | Space;
+  privacy?: ('private' | 'public') | null;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -352,6 +392,11 @@ export interface Media {
 export interface Category {
   id: string;
   title: string;
+  relatedPosts?: {
+    docs?: (string | Post)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   slug?: string | null;
   slugLock?: boolean | null;
   parent?: (string | null) | Category;
@@ -368,11 +413,32 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: string;
+  title: string;
+  relatedPosts?: {
+    docs?: (string | Post)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: string;
   name?: string | null;
+  role: 'admin' | 'editor' | 'partner' | 'fellow' | 'curator' | 'basic';
+  avatar?: (string | null) | Media;
+  isApproved?: boolean | null;
+  space?: (string | null) | Space;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -383,6 +449,33 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "spaces".
+ */
+export interface Space {
+  id: string;
+  title: 'aff' | 'partners' | 'women_safe_space';
+  users?: {
+    docs?: (string | User)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  pages?: {
+    docs?: (string | Page)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  posts?: {
+    docs?: (string | Post)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -727,6 +820,46 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock".
+ */
+export interface CodeBlock {
+  language?: ('typescript' | 'javascript' | 'css') | null;
+  code: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'code';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "charts".
+ */
+export interface Chart {
+  id: string;
+  title: string;
+  iframe: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  space: string | Space;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -918,6 +1051,18 @@ export interface PayloadLockedDocument {
         value: string | User;
       } | null)
     | ({
+        relationTo: 'tags';
+        value: string | Tag;
+      } | null)
+    | ({
+        relationTo: 'charts';
+        value: string | Chart;
+      } | null)
+    | ({
+        relationTo: 'spaces';
+        value: string | Space;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: string | Redirect;
       } | null)
@@ -1015,6 +1160,7 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        code?: T | CodeBlockSelect<T>;
       };
   meta?:
     | T
@@ -1024,6 +1170,7 @@ export interface PagesSelect<T extends boolean = true> {
         description?: T;
       };
   publishedAt?: T;
+  space?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1116,14 +1263,28 @@ export interface FormBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock_select".
+ */
+export interface CodeBlockSelect<T extends boolean = true> {
+  language?: T;
+  code?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
-  heroImage?: T;
+  featuredImage?: T;
   content?: T;
+  excerpt?: T;
+  pdf?: T;
+  iframe?: T;
   relatedPosts?: T;
   categories?: T;
+  tags?: T;
   meta?:
     | T
     | {
@@ -1139,6 +1300,9 @@ export interface PostsSelect<T extends boolean = true> {
         id?: T;
         name?: T;
       };
+  views?: T;
+  space?: T;
+  privacy?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1244,6 +1408,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
+  relatedPosts?: T;
   slug?: T;
   slugLock?: T;
   parent?: T;
@@ -1264,6 +1429,10 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  role?: T;
+  avatar?: T;
+  isApproved?: T;
+  space?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1273,6 +1442,46 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  title?: T;
+  relatedPosts?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "charts_select".
+ */
+export interface ChartsSelect<T extends boolean = true> {
+  title?: T;
+  iframe?: T;
+  description?: T;
+  space?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "spaces_select".
+ */
+export interface SpacesSelect<T extends boolean = true> {
+  title?: T;
+  users?: T;
+  pages?: T;
+  posts?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1677,17 +1886,6 @@ export interface BannerBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'banner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CodeBlock".
- */
-export interface CodeBlock {
-  language?: ('typescript' | 'javascript' | 'css') | null;
-  code: string;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'code';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

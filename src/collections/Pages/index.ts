@@ -1,12 +1,11 @@
 import type { CollectionConfig } from 'payload'
 
-import { authenticated } from '../../access/authenticated'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { Content } from '../../blocks/Content/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { Code } from '../../blocks/Code/config'
 import { hero } from '@/heros/config'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -20,14 +19,16 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { isAdmin } from '@/access/isAdmin'
+import { isLoggedInWithSpaceAccessOrPublished } from '@/access/isLoggedInWithSpaceAccessOrPublished'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
   access: {
-    create: authenticated,
-    delete: authenticated,
-    read: authenticatedOrPublished,
-    update: authenticated,
+    create: isAdmin,
+    delete: isAdmin,
+    read: isLoggedInWithSpaceAccessOrPublished(),
+    update: isAdmin,
   },
   // This config controls what's populated by default when a page is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
@@ -75,7 +76,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, Code],
               required: true,
               admin: {
                 initCollapsed: true,
@@ -116,6 +117,14 @@ export const Pages: CollectionConfig<'pages'> = {
     {
       name: 'publishedAt',
       type: 'date',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'space',
+      type: 'relationship',
+      relationTo: 'spaces',
       admin: {
         position: 'sidebar',
       },

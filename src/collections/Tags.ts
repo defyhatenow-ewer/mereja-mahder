@@ -5,8 +5,8 @@ import { isLoggedIn } from '@/access/isLoggedIn'
 import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 
-export const Categories: CollectionConfig = {
-  slug: 'categories',
+export const Tags: CollectionConfig = {
+  slug: 'tags',
   access: {
     create: isLoggedIn,
     delete: isAdminOrEditor,
@@ -26,7 +26,7 @@ export const Categories: CollectionConfig = {
       name: 'relatedPosts',
       type: 'join',
       collection: 'posts',
-      on: 'categories',
+      on: 'tags',
     },
     ...slugField(),
   ],

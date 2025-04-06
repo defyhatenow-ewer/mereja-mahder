@@ -9,8 +9,6 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
-import { authenticated } from '../../access/authenticated'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Banner } from '../../blocks/Banner/config'
 import { Code } from '../../blocks/Code/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
@@ -26,29 +24,36 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/slug'
+import { isAdmin, isAdminFieldLevel } from '@/access/isAdmin'
+import { isLoggedInWithSpaceAccessOrPublished } from '@/access/isLoggedInWithSpaceAccessOrPublished'
+import { isAdminOrEditorWithSpaceAccessOrSelf } from '@/access/isAdminOrEditorWithSpaceAccessOrSelf'
+import { isLoggedInWithSpaceAccess } from '@/access/isLoggedInWithSpaceAccess'
+import { beforeCreatePost } from './hooks/beforeCreatePost'
+import { ensureAtLeastOneAuthor } from './hooks/ensureAtLeastOneAuthor'
+import { populateFeaturedImage } from './hooks/populateFeaturedImage'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
   access: {
-    create: authenticated,
-    delete: authenticated,
-    read: authenticatedOrPublished,
-    update: authenticated,
+    create: isLoggedInWithSpaceAccess(),
+    delete: isAdmin,
+    read: isLoggedInWithSpaceAccessOrPublished(),
+    update: isAdminOrEditorWithSpaceAccessOrSelf(),
   },
   // This config controls what's populated by default when a post is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
   // Type safe if the collection slug generic is passed to `CollectionConfig` - `CollectionConfig<'posts'>
-  defaultPopulate: {
-    title: true,
-    slug: true,
-    categories: true,
-    meta: {
-      image: true,
-      description: true,
-    },
-  },
+  // defaultPopulate: {
+  //   title: true,
+  //   slug: true,
+  //   categories: true,
+  //   meta: {
+  //     image: true,
+  //     description: true,
+  //   },
+  // },
   admin: {
-    defaultColumns: ['title', 'slug', 'updatedAt'],
+    defaultColumns: ['title', 'slug', 'updatedAt', 'views'],
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
@@ -73,6 +78,7 @@ export const Posts: CollectionConfig<'posts'> = {
       name: 'title',
       type: 'text',
       required: true,
+      index: true,
     },
     {
       type: 'tabs',
@@ -80,7 +86,7 @@ export const Posts: CollectionConfig<'posts'> = {
         {
           fields: [
             {
-              name: 'heroImage',
+              name: 'featuredImage',
               type: 'upload',
               relationTo: 'media',
             },
@@ -101,6 +107,36 @@ export const Posts: CollectionConfig<'posts'> = {
               }),
               label: false,
               required: true,
+            },
+            {
+              name: 'excerpt',
+              type: 'richText',
+              editor: lexicalEditor({
+                features: ({ rootFeatures }) => {
+                  return [
+                    ...rootFeatures,
+                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+                    BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
+                    FixedToolbarFeature(),
+                    InlineToolbarFeature(),
+                    HorizontalRuleFeature(),
+                  ]
+                },
+              }),
+            },
+            {
+              name: 'pdf',
+              type: 'upload',
+              relationTo: 'media',
+              label: 'PDF',
+            },
+            {
+              name: 'iframe',
+              type: 'code',
+              admin: {
+                language: 'html',
+              },
+              label: 'iFrame',
             },
           ],
           label: 'Content',
@@ -131,6 +167,15 @@ export const Posts: CollectionConfig<'posts'> = {
               },
               hasMany: true,
               relationTo: 'categories',
+            },
+            {
+              name: 'tags',
+              type: 'relationship',
+              admin: {
+                position: 'sidebar',
+              },
+              hasMany: true,
+              relationTo: 'tags',
             },
           ],
           label: 'Meta',
@@ -217,9 +262,49 @@ export const Posts: CollectionConfig<'posts'> = {
         },
       ],
     },
+    {
+      name: 'views',
+      type: 'number',
+      defaultValue: 0,
+      min: 0,
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'space',
+      type: 'relationship',
+      relationTo: 'spaces',
+      admin: {
+        position: 'sidebar',
+      },
+      access: {
+        update: isAdminFieldLevel,
+      },
+    },
+    {
+      name: 'privacy',
+      type: 'select',
+      admin: {
+        position: 'sidebar',
+      },
+      options: [
+        {
+          label: 'Private',
+          value: 'private',
+        },
+        {
+          label: 'Public',
+          value: 'public',
+        },
+      ],
+      defaultValue: 'private',
+    },
     ...slugField(),
   ],
   hooks: {
+    beforeChange: [beforeCreatePost, ensureAtLeastOneAuthor],
     afterChange: [revalidatePost],
     afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],
