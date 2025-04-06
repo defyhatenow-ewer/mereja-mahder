@@ -306,7 +306,7 @@ export const Posts: CollectionConfig<'posts'> = {
   hooks: {
     beforeChange: [beforeCreatePost, ensureAtLeastOneAuthor],
     afterChange: [revalidatePost],
-    afterRead: [populateAuthors, populateFeaturedImage],
+    afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],
   },
   versions: {
