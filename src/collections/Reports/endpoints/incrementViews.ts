@@ -6,32 +6,29 @@ export const incrementViewsEndpoint: Endpoint = {
   handler: async (req: PayloadRequest) => {
     if (req.routeParams && req.routeParams.id) {
       const id = req.routeParams.id as string
-      console.log({ id })
 
       try {
-        // Find the post by ID
-        const post = await req.payload.findByID({
-          collection: 'posts',
+        // Find the report by ID
+        const report = await req.payload.findByID({
+          collection: 'reports',
           id,
         })
 
-        if (!post) {
+        if (!report) {
           return Response.json({ message: 'Post not found' }, { status: 404 })
         }
 
-        console.log({ post })
-
         // Increment views
-        const updatedPost = await req.payload.update({
-          collection: 'posts',
+        const updatedReport = await req.payload.update({
+          collection: 'reports',
           id,
           data: {
-            views: (post.views || 0) + 1,
+            views: (report.views || 0) + 1,
           },
         })
 
-        // Return the updated post
-        return Response.json(updatedPost, { status: 200 })
+        // Return the updated report
+        return Response.json(updatedReport, { status: 200 })
       } catch (error) {
         console.error(error)
         return Response.json({ message: 'An error occured' }, { status: 500 })

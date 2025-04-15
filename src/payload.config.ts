@@ -7,7 +7,22 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
-import { Categories, Media, Pages, Posts, Users, Tags, Charts, Spaces } from './collections'
+import {
+  Categories,
+  Media,
+  Pages,
+  Posts,
+  Users,
+  Tags,
+  Charts,
+  Spaces,
+  Banners,
+  Reports,
+  Articles,
+  Materials,
+  Resources,
+  Shows,
+} from './collections'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -21,12 +36,6 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     components: {
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
-      beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
-      beforeDashboard: ['@/components/BeforeDashboard'],
       views: {
         Home: {
           Component: '@/views/Home',
@@ -70,7 +79,22 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Tags, Charts, Spaces],
+  collections: [
+    Pages,
+    Posts,
+    Media,
+    Categories,
+    Users,
+    Tags,
+    Charts,
+    Spaces,
+    Banners,
+    Reports,
+    Articles,
+    Materials,
+    Resources,
+    Shows,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [...plugins],
