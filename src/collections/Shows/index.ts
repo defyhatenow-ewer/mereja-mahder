@@ -30,20 +30,18 @@ import { isAdminOrEditorWithSpaceAccessOrSelf } from '@/access/isAdminOrEditorWi
 import { isLoggedInWithSpaceAccess } from '@/access/isLoggedInWithSpaceAccess'
 import { beforeCreatePost } from './hooks/beforeCreatePost'
 import { ensureAtLeastOneAuthor } from './hooks/ensureAtLeastOneAuthor'
-import { incrementViewsEndpoint } from './endpoints/incrementViews'
-import { updateViews } from './hooks/updateViews'
 
-export const Posts: CollectionConfig<'posts'> = {
-  slug: 'posts',
+export const Shows: CollectionConfig<'shows'> = {
+  slug: 'shows',
   access: {
     create: isLoggedInWithSpaceAccess(),
     delete: isAdmin,
     read: isLoggedInWithSpaceAccessOrPublished(),
     update: isAdminOrEditorWithSpaceAccessOrSelf(),
   },
-  // This config controls what's populated by default when a post is referenced
+  // This config controls what's populated by default when a show is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
-  // Type safe if the collection slug generic is passed to `CollectionConfig` - `CollectionConfig<'posts'>
+  // Type safe if the collection slug generic is passed to `CollectionConfig` - `CollectionConfig<'shows'>
   // defaultPopulate: {
   //   title: true,
   //   slug: true,
@@ -59,7 +57,7 @@ export const Posts: CollectionConfig<'posts'> = {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
           slug: typeof data?.slug === 'string' ? data.slug : '',
-          collection: 'posts',
+          collection: 'shows',
           req,
         })
 
@@ -69,7 +67,7 @@ export const Posts: CollectionConfig<'posts'> = {
     preview: (data, { req }) =>
       generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
-        collection: 'posts',
+        collection: 'shows',
         req,
       }),
     useAsTitle: 'title',
@@ -126,18 +124,13 @@ export const Posts: CollectionConfig<'posts'> = {
               }),
             },
             {
-              name: 'pdf',
-              type: 'upload',
-              relationTo: 'media',
-              label: 'PDF',
-            },
-            {
               name: 'iframe',
               type: 'code',
               admin: {
                 language: 'html',
               },
               label: 'iFrame',
+              required: true,
             },
           ],
           label: 'Content',
@@ -145,7 +138,7 @@ export const Posts: CollectionConfig<'posts'> = {
         {
           fields: [
             {
-              name: 'relatedPosts',
+              name: 'relatedShows',
               type: 'relationship',
               admin: {
                 position: 'sidebar',
@@ -158,7 +151,7 @@ export const Posts: CollectionConfig<'posts'> = {
                 }
               },
               hasMany: true,
-              relationTo: 'posts',
+              relationTo: 'shows',
             },
             {
               name: 'categories',
@@ -319,5 +312,4 @@ export const Posts: CollectionConfig<'posts'> = {
     },
     maxPerDoc: 50,
   },
-  endpoints: [incrementViewsEndpoint],
 }
