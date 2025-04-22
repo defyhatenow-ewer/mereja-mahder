@@ -31,7 +31,6 @@ import { isLoggedInWithSpaceAccess } from '@/access/isLoggedInWithSpaceAccess'
 import { beforeCreatePost } from './hooks/beforeCreatePost'
 import { ensureAtLeastOneAuthor } from './hooks/ensureAtLeastOneAuthor'
 import { incrementViewsEndpoint } from './endpoints/incrementViews'
-import { updateViews } from './hooks/updateViews'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
