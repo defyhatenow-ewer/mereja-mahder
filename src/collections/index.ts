@@ -4,7 +4,6 @@ import { Users } from './Users'
 import { Categories } from './Categories'
 import { Media } from './Media'
 import { Tags } from './Tags'
-import { CommentsFields, Comments } from './Comments'
 import { Charts } from './Charts'
 import { Spaces } from './Spaces'
 import { Banners } from './Banner'
@@ -21,9 +20,7 @@ export {
   Categories,
   Media,
   Tags,
-  CommentsFields,
   Charts,
-  Comments,
   Spaces,
   Banners,
   Reports,

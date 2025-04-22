@@ -4,7 +4,7 @@ import type {
   CollectionOptions,
   GeneratedAdapter,
 } from '@payloadcms/plugin-cloud-storage/types'
-import type { Config, Plugin } from 'payload'
+import type { Config } from 'payload'
 
 import { v2 as cloudinary } from 'cloudinary'
 import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage'

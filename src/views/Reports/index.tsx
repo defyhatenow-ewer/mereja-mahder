@@ -7,5 +7,7 @@ export default async function Reports({ payload }: { payload: Payload }) {
     id: '123',
   })
 
+  console.log(page.id)
+
   return <p>Reports view</p>
 }
