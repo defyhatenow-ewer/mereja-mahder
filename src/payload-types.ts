@@ -80,6 +80,9 @@ export interface Config {
     materials: Material;
     resources: Resource;
     shows: Show;
+    'safety-resources': SafetyResource;
+    forums: Forum;
+    messages: Message;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -101,6 +104,9 @@ export interface Config {
       pages: 'pages';
       posts: 'posts';
     };
+    forums: {
+      messages: 'messages';
+    };
   };
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
@@ -117,6 +123,9 @@ export interface Config {
     materials: MaterialsSelect<false> | MaterialsSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
     shows: ShowsSelect<false> | ShowsSelect<true>;
+    'safety-resources': SafetyResourcesSelect<false> | SafetyResourcesSelect<true>;
+    forums: ForumsSelect<false> | ForumsSelect<true>;
+    messages: MessagesSelect<false> | MessagesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1281,6 +1290,105 @@ export interface Show {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "safety-resources".
+ */
+export interface SafetyResource {
+  id: string;
+  title: string;
+  featuredImage?: (string | null) | Media;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  excerpt?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  pdf?: (string | null) | Media;
+  relatedSafetyResources?: (string | SafetyResource)[] | null;
+  categories?: (string | Category)[] | null;
+  tags?: (string | Tag)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  authors?: (string | User)[] | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+      }[]
+    | null;
+  views?: number | null;
+  space?: (string | null) | Space;
+  privacy?: ('private' | 'public') | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forums".
+ */
+export interface Forum {
+  id: string;
+  author: string | User;
+  title: string;
+  description: string;
+  messages?: {
+    docs?: (string | Message)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: string;
+  author: string | User;
+  forum: string | Forum;
+  text: string;
+  replyTo?: (string | null) | Message;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1506,6 +1614,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'shows';
         value: string | Show;
+      } | null)
+    | ({
+        relationTo: 'safety-resources';
+        value: string | SafetyResource;
+      } | null)
+    | ({
+        relationTo: 'forums';
+        value: string | Forum;
+      } | null)
+    | ({
+        relationTo: 'messages';
+        value: string | Message;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2167,6 +2287,69 @@ export interface ShowsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "safety-resources_select".
+ */
+export interface SafetyResourcesSelect<T extends boolean = true> {
+  title?: T;
+  featuredImage?: T;
+  content?: T;
+  excerpt?: T;
+  pdf?: T;
+  relatedSafetyResources?: T;
+  categories?: T;
+  tags?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  authors?: T;
+  populatedAuthors?:
+    | T
+    | {
+        id?: T;
+        name?: T;
+      };
+  views?: T;
+  space?: T;
+  privacy?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forums_select".
+ */
+export interface ForumsSelect<T extends boolean = true> {
+  author?: T;
+  title?: T;
+  description?: T;
+  messages?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages_select".
+ */
+export interface MessagesSelect<T extends boolean = true> {
+  author?: T;
+  forum?: T;
+  text?: T;
+  replyTo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects_select".
  */
 export interface RedirectsSelect<T extends boolean = true> {
@@ -2562,6 +2745,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'shows';
           value: string | Show;
+        } | null)
+      | ({
+          relationTo: 'safety-resources';
+          value: string | SafetyResource;
         } | null);
     global?: string | null;
     user?: (string | null) | User;

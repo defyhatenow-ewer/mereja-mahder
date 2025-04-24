@@ -12,6 +12,9 @@ import { Articles } from './Articles'
 import { Materials } from './Materials'
 import { Resources } from './Resources'
 import { Shows } from './Shows'
+import { SafetyResources } from './SafetyResources'
+import { Messages } from './Messages'
+import { Forums } from './Forums'
 
 export {
   Pages,
@@ -28,4 +31,7 @@ export {
   Materials,
   Resources,
   Shows,
+  SafetyResources,
+  Messages,
+  Forums,
 }
