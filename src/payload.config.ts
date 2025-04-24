@@ -22,6 +22,9 @@ import {
   Materials,
   Resources,
   Shows,
+  SafetyResources,
+  Forums,
+  Messages,
 } from './collections'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -94,6 +97,9 @@ export default buildConfig({
     Materials,
     Resources,
     Shows,
+    SafetyResources,
+    Forums,
+    Messages,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
