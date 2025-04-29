@@ -45,7 +45,7 @@ export const getHandler =
       if (etagFromHeaders && etagFromHeaders === objectEtag) {
         return new Response(null, {
           headers: new Headers({
-            'Content-Type': blob.type,
+            'Content-Type': fileExt === '.pdf' ? 'application/pdf' : blob.type,
             'Content-Length': String(blob.size),
             ETag: objectEtag,
           }),
@@ -56,7 +56,7 @@ export const getHandler =
       // Redirect to Cloudinary URL
       return new Response(blob, {
         headers: new Headers({
-          'Content-Type': blob.type,
+          'Content-Type': fileExt === '.pdf' ? 'application/pdf' : blob.type,
           'Content-Length': String(blob.size),
           ETag: objectEtag,
         }),
