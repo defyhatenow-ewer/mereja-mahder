@@ -38,6 +38,24 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    suppressHydrationWarning: true,
+    meta: {
+      title: 'Mereja Mahder',
+      titleSuffix: '- #defyhatenow Ethiopia',
+      openGraph: {
+        title: 'Mereja Mahder',
+        description:
+          'An open-access information repository by #defyhatenow Ethiopia, serving as a central hub for credible reports, cybersecurity and safety resources, fact-checks, open datasets and informative resources to discern disinformation.',
+        images: {
+          url: 'favicon.png',
+        },
+      },
+      icons: [
+        {
+          url: 'favicon.png',
+        },
+      ],
+    },
     components: {
       views: {
         Home: {
@@ -48,6 +66,10 @@ export default buildConfig({
           Component: '@/views/Reports',
           path: '/reports',
         },
+      },
+      graphics: {
+        Icon: '@/components/NavIcon/NavIcon',
+        Logo: '@/components/CustomLogo/CustomLogo',
       },
     },
     importMap: {

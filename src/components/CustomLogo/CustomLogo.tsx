@@ -7,14 +7,13 @@ interface Props {
   priority?: 'auto' | 'high' | 'low'
 }
 
-export const Logo = (props: Props) => {
+const CustomLogo = (props: Props) => {
   const { loading: loadingFromProps, priority: priorityFromProps, className } = props
 
   const loading = loadingFromProps || 'lazy'
   const priority = priorityFromProps || 'low'
-
   return (
-    /* eslint-disable @next/next/no-img-element */
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       alt="Mereja Mahder Logo"
       width={193}
@@ -22,8 +21,10 @@ export const Logo = (props: Props) => {
       loading={loading}
       fetchPriority={priority}
       decoding="async"
-      className={clsx('max-w-[9.375rem] w-full h-[34px]', className)}
+      className={clsx('max-w-[9.375rem] w-full h-[34px] invert-0 dark:invert', className)}
       src="logo.png"
     />
   )
 }
+
+export default CustomLogo
