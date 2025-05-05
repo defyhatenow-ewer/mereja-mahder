@@ -61,7 +61,7 @@ export const homeStatic: RequiredDataFromCollectionSlug<'pages'> = {
                 format: 0,
                 mode: 'normal',
                 style: '',
-                text: ' to add content for the website.',
+                text: ' to contribute.',
                 version: 1,
               },
             ],

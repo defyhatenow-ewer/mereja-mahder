@@ -104,7 +104,6 @@ export const Reports: CollectionConfig<'reports'> = {
                   ]
                 },
               }),
-              label: false,
               required: true,
             },
             {

@@ -104,7 +104,6 @@ export const Articles: CollectionConfig<'articles'> = {
                   ]
                 },
               }),
-              label: false,
               required: true,
             },
             {

@@ -104,7 +104,6 @@ export const Materials: CollectionConfig<'materials'> = {
                   ]
                 },
               }),
-              label: false,
               required: true,
             },
             {

@@ -25,6 +25,7 @@ import {
   SafetyResources,
   Forums,
   Messages,
+  LearningResources,
 } from './collections'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -47,12 +48,12 @@ export default buildConfig({
         description:
           'An open-access information repository by #defyhatenow Ethiopia, serving as a central hub for credible reports, cybersecurity and safety resources, fact-checks, open datasets and informative resources to discern disinformation.',
         images: {
-          url: 'favicon.png',
+          url: '/favicon.png',
         },
       },
       icons: [
         {
-          url: 'favicon.png',
+          url: '/favicon.png',
         },
       ],
     },
@@ -122,6 +123,7 @@ export default buildConfig({
     SafetyResources,
     Forums,
     Messages,
+    LearningResources,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],

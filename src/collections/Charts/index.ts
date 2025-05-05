@@ -104,7 +104,6 @@ export const Charts: CollectionConfig<'charts'> = {
                   ]
                 },
               }),
-              label: false,
               required: true,
             },
             {

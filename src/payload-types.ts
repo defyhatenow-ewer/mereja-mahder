@@ -83,6 +83,7 @@ export interface Config {
     'safety-resources': SafetyResource;
     forums: Forum;
     messages: Message;
+    'learning-resources': LearningResource;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -126,6 +127,7 @@ export interface Config {
     'safety-resources': SafetyResourcesSelect<false> | SafetyResourcesSelect<true>;
     forums: ForumsSelect<false> | ForumsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
+    'learning-resources': LearningResourcesSelect<false> | LearningResourcesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1389,6 +1391,73 @@ export interface Message {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "learning-resources".
+ */
+export interface LearningResource {
+  id: string;
+  title: string;
+  featuredImage?: (string | null) | Media;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  excerpt?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  pdf?: (string | null) | Media;
+  relatedLearningResources?: (string | LearningResource)[] | null;
+  categories?: (string | Category)[] | null;
+  tags?: (string | Tag)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  authors?: (string | User)[] | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+      }[]
+    | null;
+  views?: number | null;
+  space?: (string | null) | Space;
+  privacy?: ('private' | 'public') | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1626,6 +1695,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'messages';
         value: string | Message;
+      } | null)
+    | ({
+        relationTo: 'learning-resources';
+        value: string | LearningResource;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2350,6 +2423,43 @@ export interface MessagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "learning-resources_select".
+ */
+export interface LearningResourcesSelect<T extends boolean = true> {
+  title?: T;
+  featuredImage?: T;
+  content?: T;
+  excerpt?: T;
+  pdf?: T;
+  relatedLearningResources?: T;
+  categories?: T;
+  tags?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  authors?: T;
+  populatedAuthors?:
+    | T
+    | {
+        id?: T;
+        name?: T;
+      };
+  views?: T;
+  space?: T;
+  privacy?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects_select".
  */
 export interface RedirectsSelect<T extends boolean = true> {
@@ -2749,6 +2859,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'safety-resources';
           value: string | SafetyResource;
+        } | null)
+      | ({
+          relationTo: 'learning-resources';
+          value: string | LearningResource;
         } | null);
     global?: string | null;
     user?: (string | null) | User;

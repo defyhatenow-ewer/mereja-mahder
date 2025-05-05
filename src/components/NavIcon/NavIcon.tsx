@@ -22,7 +22,7 @@ const NavIcon = (props: Props) => {
       fetchPriority={priority}
       decoding="async"
       className={clsx('', className)}
-      src="favicon.png"
+      src="/favicon.png"
     />
   )
 }

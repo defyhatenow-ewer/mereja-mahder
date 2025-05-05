@@ -31,8 +31,8 @@ import { isLoggedInWithSpaceAccess } from '@/access/isLoggedInWithSpaceAccess'
 import { beforeCreatePost } from './hooks/beforeCreatePost'
 import { ensureAtLeastOneAuthor } from './hooks/ensureAtLeastOneAuthor'
 
-export const Resources: CollectionConfig<'resources'> = {
-  slug: 'resources',
+export const LearningResources: CollectionConfig<'learning-resources'> = {
+  slug: 'learning-resources',
   access: {
     create: isLoggedInWithSpaceAccess(),
     delete: isAdmin,
@@ -41,7 +41,7 @@ export const Resources: CollectionConfig<'resources'> = {
   },
   // This config controls what's populated by default when a resource is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
-  // Type safe if the collection slug generic is passed to `CollectionConfig` - `CollectionConfig<'resources'>
+  // Type safe if the collection slug generic is passed to `CollectionConfig` - `CollectionConfig<'learning-resources'>
   // defaultPopulate: {
   //   title: true,
   //   slug: true,
@@ -57,7 +57,7 @@ export const Resources: CollectionConfig<'resources'> = {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
           slug: typeof data?.slug === 'string' ? data.slug : '',
-          collection: 'resources',
+          collection: 'learning-resources',
           req,
         })
 
@@ -67,7 +67,7 @@ export const Resources: CollectionConfig<'resources'> = {
     preview: (data, { req }) =>
       generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
-        collection: 'resources',
+        collection: 'learning-resources',
         req,
       }),
     useAsTitle: 'title',
@@ -134,7 +134,7 @@ export const Resources: CollectionConfig<'resources'> = {
         {
           fields: [
             {
-              name: 'relatedResources',
+              name: 'relatedLearningResources',
               type: 'relationship',
               admin: {
                 position: 'sidebar',
@@ -147,7 +147,7 @@ export const Resources: CollectionConfig<'resources'> = {
                 }
               },
               hasMany: true,
-              relationTo: 'resources',
+              relationTo: 'learning-resources',
             },
             {
               name: 'categories',

@@ -104,7 +104,6 @@ export const Shows: CollectionConfig<'shows'> = {
                   ]
                 },
               }),
-              label: false,
               required: true,
             },
             {

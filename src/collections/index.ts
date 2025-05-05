@@ -15,6 +15,7 @@ import { Shows } from './Shows'
 import { SafetyResources } from './SafetyResources'
 import { Messages } from './Messages'
 import { Forums } from './Forums'
+import { LearningResources } from './LearningResources'
 
 export {
   Pages,
@@ -34,4 +35,5 @@ export {
   SafetyResources,
   Messages,
   Forums,
+  LearningResources,
 }

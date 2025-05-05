@@ -104,7 +104,6 @@ export const SafetyResources: CollectionConfig<'safety-resources'> = {
                   ]
                 },
               }),
-              label: false,
               required: true,
             },
             {
