@@ -48,9 +48,18 @@ export const registerEndpoint: Endpoint = {
         const editors = await req.payload.find({
           collection: 'users',
           where: {
-            space: {
-              equals: data.space,
-            },
+            and: [
+              {
+                space: {
+                  equals: data.space,
+                },
+              },
+              {
+                role: {
+                  equals: 'editor',
+                },
+              },
+            ],
           },
         })
 
