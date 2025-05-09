@@ -29,6 +29,7 @@ export const registerEndpoint: Endpoint = {
             password: data.password,
             role: 'basic',
             name: data.name,
+            space: data.space,
           },
         })
 

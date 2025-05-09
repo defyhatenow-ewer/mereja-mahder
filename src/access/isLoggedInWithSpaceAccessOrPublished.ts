@@ -1,21 +1,27 @@
-import { Access } from 'payload'
-import { User } from '../payload-types'
+import { Access, AccessResult } from 'payload'
 
 export const isLoggedInWithSpaceAccessOrPublished =
-  (spaceIDFieldName: string = 'space'): Access<User> =>
+  (spaceIDFieldName: string = 'space'): Access =>
   ({ req: { user } }) => {
     if (user && user.isApproved) {
       if (user.role === 'admin') {
         return true
       }
 
-      if (user.space) {
-        return {
-          [spaceIDFieldName]: {
-            equals: user.space,
+      return {
+        or: [
+          {
+            [spaceIDFieldName]: {
+              equals: user.space as string,
+            },
           },
-        }
-      }
+          {
+            _status: {
+              equals: 'published',
+            },
+          },
+        ],
+      } as AccessResult
     }
 
     return {
