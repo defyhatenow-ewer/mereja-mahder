@@ -149,7 +149,7 @@ export default buildConfig({
     tasks: [],
   },
   email: nodemailerAdapter({
-    defaultFromAddress: process.env.EMAIL_FROM ?? 'waflinus96@gmail.com',
+    defaultFromAddress: process.env.EMAIL_FROM,
     defaultFromName: 'Mereja Mahder',
     // Nodemailer transportOptions
     transportOptions: {
