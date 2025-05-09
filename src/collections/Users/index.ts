@@ -6,6 +6,7 @@ import { isAdmin, isAdminFieldLevel } from '@/access/isAdmin'
 import { isLoggedInWithSpaceAccess } from '@/access/isLoggedInWithSpaceAccess'
 import { isAdminOrSelfOrMyEditor } from '@/access/isAdminOrSelfOrMyEditor'
 import { registerEndpoint } from './endpoints/register'
+import { getServerSideURL } from '@/utilities/getURL'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -73,6 +74,37 @@ export const Users: CollectionConfig = {
       access: {
         create: isAdminOrEditorWithSpaceAccessFieldLevel(),
         update: isAdminOrEditorWithSpaceAccessFieldLevel(),
+      },
+      hooks: {
+        afterChange: [
+          async ({ value, req, originalDoc, operation }) => {
+            if (operation === 'update') {
+              if (value) {
+                await req.payload.sendEmail({
+                  to: originalDoc.email,
+                  subject: 'Your account has been approved!',
+                  html: `<div style="margin:30px; padding:30px; border:1px solid black; border-radius: 20px 10px;"><h4><strong>Hi ${originalDoc.name},</strong></h4>
+                <p>Congratulations! Your account has been approved</p>
+                <p>You can now login <a href="${getServerSideURL()}/auth/login" target="_blank">here</a></p>
+                <p>Don't hesitate to contact us if you face any problems</p>
+                <p>Regards,</p>
+                <p><strong>Team</strong></p></div>`,
+                })
+              } else {
+                await req.payload.sendEmail({
+                  to: originalDoc.email,
+                  subject: 'Your account has been blocked',
+                  html: `<div style="margin:30px; padding:30px; border:1px solid black; border-radius: 20px 10px;"><h4><strong>Hi ${originalDoc.name},</strong></h4>
+                <p>Sorry, your account has been blocked</p>
+                <p>Please contact the admin for help</p>
+                <p>Don't hesitate to contact us if you face any problems</p>
+                <p>Regards,</p>
+                <p><strong>Team</strong></p></div>`,
+                })
+              }
+            }
+          },
+        ],
       },
     },
     {

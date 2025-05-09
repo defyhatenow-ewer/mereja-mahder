@@ -1,3 +1,4 @@
+import { User } from '@/payload-types'
 import { Endpoint, PayloadRequest } from 'payload'
 
 export const registerEndpoint: Endpoint = {
@@ -18,10 +19,10 @@ export const registerEndpoint: Endpoint = {
 
     if (req.json) {
       try {
-        const data = await req.json()
+        const data = (await req.json()) as Omit<User, 'createdAt' | 'id' | 'sizes' | 'updatedAt'>
 
         // Create the user
-        await req.payload.create({
+        const user = await req.payload.create({
           collection: 'users',
           data: {
             email: data.email,
@@ -31,16 +32,50 @@ export const registerEndpoint: Endpoint = {
           },
         })
 
-        // Login the user automatically
-        const loginResult = await req.payload.login({
+        // Send email to registering user
+        await req.payload.sendEmail({
+          to: data.email,
+          subject: 'Welcome to Mereja Mahder',
+          html: `<div style="margin:30px; padding:30px; border:1px solid black; border-radius: 20px 10px;"><h4><strong>Hi ${data.name},</strong></h4>
+            <p>Congratulations! Your account has been created successfully.</p>
+            <p>Please wait while one of our admins approves your account</p>
+            <p>Don't hesitate to contact us if you face any problems</p>
+            <p>Regards,</p>
+            <p><strong>Team</strong></p></div>`,
+        })
+        // Send emails to editors
+        const editors = await req.payload.find({
           collection: 'users',
-          data: {
-            email: data.email,
-            password: data.password,
+          where: {
+            space: {
+              equals: data.space,
+            },
           },
         })
 
-        return new Response(JSON.stringify(loginResult), {
+        editors.docs.forEach(async (editor) => {
+          await req.payload.sendEmail({
+            to: editor.email,
+            subject: 'New User',
+            html: `<div style="margin:30px; padding:30px; border:1px solid black; border-radius: 20px 10px;"><h4><strong>Hi Editor,</strong></h4>
+            <p>You have a new user!.</p>
+            <p>Please approve their account.</p>
+            <p>Don't hesitate to contact us if you face any problems</p>
+            <p>Regards,</p>
+            <p><strong>Team</strong></p></div>`,
+          })
+        })
+
+        // Login the user automatically
+        // const loginResult = await req.payload.login({
+        //   collection: 'users',
+        //   data: {
+        //     email: data.email,
+        //     password: data.password as string,
+        //   },
+        // })
+
+        return new Response(JSON.stringify(user), {
           status: 200,
           headers,
         })
