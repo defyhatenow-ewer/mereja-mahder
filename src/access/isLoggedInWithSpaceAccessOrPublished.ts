@@ -2,7 +2,9 @@ import { Access, AccessResult } from 'payload'
 
 export const isLoggedInWithSpaceAccessOrPublished =
   (spaceIDFieldName: string = 'space'): Access =>
-  ({ req: { user } }) => {
+  ({ req: { user, query } }) => {
+    const { hide } = query
+    if (hide) return false
     if (user && user.isApproved) {
       if (user.role === 'admin') {
         return true
