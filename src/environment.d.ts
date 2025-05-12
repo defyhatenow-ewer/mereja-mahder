@@ -4,6 +4,8 @@ declare global {
       PAYLOAD_SECRET: string
       DATABASE_URI: string
       NEXT_PUBLIC_SERVER_URL: string
+      NEXT_PUBLIC_CLIENT_URL: string
+      DOMAIN: string
       VERCEL_PROJECT_PRODUCTION_URL: string
       SMTP_HOST: string
       SMTP_USER: string

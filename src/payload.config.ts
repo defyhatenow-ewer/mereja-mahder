@@ -31,7 +31,7 @@ import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
-import { getServerSideURL } from './utilities/getURL'
+import { getClientSideURL, getServerSideURL } from './utilities/getURL'
 import { seed } from './seed'
 
 const filename = fileURLToPath(import.meta.url)
@@ -125,7 +125,7 @@ export default buildConfig({
     Messages,
     LearningResources,
   ],
-  cors: [getServerSideURL()].filter(Boolean),
+  cors: [getServerSideURL(), getClientSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [...plugins],
   secret: process.env.PAYLOAD_SECRET,
