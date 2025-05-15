@@ -32,6 +32,7 @@ export const loginEndpoint: Endpoint = {
         })
 
         if (loginResult.token) {
+          console.log('Token exists')
           // Set the cookie using the serialize function
           const cookie = serialize('payload-token', loginResult.token, {
             httpOnly: true, // Prevent client-side access

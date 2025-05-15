@@ -22,7 +22,11 @@ export const Users: CollectionConfig = {
     defaultColumns: ['name', 'email', 'role'],
     useAsTitle: 'name',
   },
-  auth: true,
+  auth: {
+    cookies: {
+      domain: process.env.DOMAIN,
+    },
+  },
   fields: [
     {
       name: 'name',
